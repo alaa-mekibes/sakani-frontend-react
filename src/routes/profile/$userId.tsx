@@ -47,6 +47,11 @@ function ProfilePage() {
       if (value.password) formData.append('password', value.password);
       if (avatarFile) formData.append('image', avatarFile);
 
+      if ([...formData.entries()].length === 0) {
+        toast('Nothing to update');
+        return;
+      }
+
       const res = await api.uploadPatch<IUser>('/auth/me', formData);
 
       if (res?.status === 'success') {

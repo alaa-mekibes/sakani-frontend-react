@@ -16,9 +16,12 @@ export const registerSchema = z.object({
 export const updateUserSchema = z.object({
     name: z.string().min(2).max(20),
     email: z.email(),
-    password: z.string().min(8),
-    confirmPassword: z.string().min(8),
-})
+    password: z.string().min(8).or(z.literal('')),
+    confirmPassword: z.string().min(8).or(z.literal('')),
+}).refine(
+    data => data.password === data.confirmPassword,
+    { message: 'Passwords do not match', path: ['confirmPassword'] }
+);
 export type ISignup = z.infer<typeof registerSchema>;
 
 //* Property
