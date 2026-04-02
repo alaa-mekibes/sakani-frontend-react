@@ -1,12 +1,13 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import { api } from '../../lib/api';
-import type { IGetProperty, IUser } from '../../interfaces';
+import type { IGetInquiry, IGetProperty, IUser } from '../../interfaces';
 import { MapPin, User, Calendar, ArrowLeft } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { formatDate, priceFormatter } from '../../utils';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { ImageSlider } from '../../components/layout/ImageSlider';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/properties/$propertyId')({
     loader: async ({ params }) => {
@@ -14,23 +15,37 @@ export const Route = createFileRoute('/properties/$propertyId')({
         if (!property?.data) throw notFound();
 
         const owner = await api.get<IUser>(`/auth/${property.data.owner}`);
-        return { property: property.data, owner: owner.data };
+        const inquiry = await api.get<IGetInquiry>(`/inquiry/property/${params.propertyId}`);
+        return { property: property.data, owner: owner.data, inquiry: inquiry.data };
     },
     component: PropertyPage,
 })
 
 function PropertyPage() {
-    const { property, owner } = Route.useLoaderData();
+    const { property, owner, inquiry } = Route.useLoaderData();
     const { user } = useAuth();
     const isMine = property.owner === user?._id;
     const navigate = useNavigate();
+    const [currentInquiry, setCurrentInquiry] = useState<IGetInquiry | null>(inquiry ?? null);
 
-    const handleInquiry = async () => {
+    const sendInquiry = async () => {
         const res = await api.post(`/inquiry/property/${property._id}`);
         if (res.status === 'success') {
+            setCurrentInquiry(res.data as IGetInquiry);
             toast.success('Your message is send successful!')
         } else {
             toast.error(res.message ?? 'Failed sending message')
+        }
+    }
+
+    const deleteInquiry = async () => {
+        if (!inquiry) return;
+        const res = await api.delete(`/inquiry/${inquiry._id}`);
+        if (res.status === 'success') {
+            setCurrentInquiry(null);
+            toast.success('Your message is deleted successful!')
+        } else {
+            toast.error(res.message ?? 'Failed deleting message')
         }
     }
 
@@ -94,8 +109,7 @@ function PropertyPage() {
                                             <User className="h-5 w-5" />
                                             <div>
                                                 <p className="text-sm font-semibold">Owner</p>
-                                                <p>{owner?.name}</p>
-                                                <p>{owner?.email}</p>
+                                                <p>{owner?.name} - <Link className='text-info' to='/profile/$userId' params={{ userId: property.owner }}>Visit his profile</Link></p>
                                             </div>
                                         </div>
 
@@ -129,9 +143,9 @@ function PropertyPage() {
                                         Contact the owner directly to schedule a viewing or ask questions.
                                     </p>
                                     <div className="card-actions mt-4">
-                                        <button className="btn btn-primary w-full"
-                                            onClick={handleInquiry}>
-                                            Contact Owner
+                                        <button className={`btn btn-primary w-full ${currentInquiry && 'btn-soft btn-secondary'}`}
+                                            onClick={currentInquiry ? deleteInquiry : sendInquiry}>
+                                            {currentInquiry ? "Delete contact" : "Contact Owner"}
                                         </button>
                                     </div>
                                 </div>}

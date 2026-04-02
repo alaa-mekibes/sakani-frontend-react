@@ -18,9 +18,9 @@ const Hero = () => {
                 <div className="absolute inset-0 bg-linear-to-r from-base-300/90 via-base-300/70 to-base-300/50 dark:from-black/90 dark:via-black/70 dark:to-black/50"></div>
             </div>
 
-            <div className="hero-content text-center relative z-10 w-full px-4">
+            <div className="hero-content text-center relative w-full px-4">
                 <div className="max-w-4xl">
-                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent drop-shadow-lg mb-6 pb-2">
+                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent drop-shadow-lg  mb-6 pb-3">
                         Find Your Dream Home in Algeria
                     </h2>
 

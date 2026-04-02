@@ -1,9 +1,10 @@
-import type { PropertyType } from "../types";
+import type { InquiryStatus, PropertyType } from "../types";
 
 export interface IUser {
     _id: string;
     name: string;
     email: string;
+    avatar: string | null;
     createdAt: string;
     updatedAt: string;
 }
@@ -18,4 +19,13 @@ export interface IGetProperty {
     images: string[],
     createdAt: string;
     updatedAt: string;
+}
+
+export interface IGetInquiry {
+    _id: string;
+    status: InquiryStatus;
+    buyer: string;
+    owner: string;
+    property: string;
+    createdAt: string;
 }

@@ -15,6 +15,7 @@ import { Route as PropertiesIndexRouteImport } from './routes/properties/index'
 import { Route as PropertiesUpdateRouteImport } from './routes/properties/update'
 import { Route as PropertiesCreateRouteImport } from './routes/properties/create'
 import { Route as PropertiesPropertyIdRouteImport } from './routes/properties/$propertyId'
+import { Route as ProfileUserIdRouteImport } from './routes/profile/$userId'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 
@@ -48,6 +49,11 @@ const PropertiesPropertyIdRoute = PropertiesPropertyIdRouteImport.update({
   path: '/$propertyId',
   getParentRoute: () => PropertiesRouteRoute,
 } as any)
+const ProfileUserIdRoute = ProfileUserIdRouteImport.update({
+  id: '/profile/$userId',
+  path: '/profile/$userId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const authSignupRoute = authSignupRouteImport.update({
   id: '/(auth)/signup',
   path: '/signup',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/properties': typeof PropertiesRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/profile/$userId': typeof ProfileUserIdRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties/create': typeof PropertiesCreateRoute
   '/properties/update': typeof PropertiesUpdateRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/profile/$userId': typeof ProfileUserIdRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties/create': typeof PropertiesCreateRoute
   '/properties/update': typeof PropertiesUpdateRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/properties': typeof PropertiesRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
+  '/profile/$userId': typeof ProfileUserIdRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties/create': typeof PropertiesCreateRoute
   '/properties/update': typeof PropertiesUpdateRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/properties'
     | '/login'
     | '/signup'
+    | '/profile/$userId'
     | '/properties/$propertyId'
     | '/properties/create'
     | '/properties/update'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/profile/$userId'
     | '/properties/$propertyId'
     | '/properties/create'
     | '/properties/update'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/properties'
     | '/(auth)/login'
     | '/(auth)/signup'
+    | '/profile/$userId'
     | '/properties/$propertyId'
     | '/properties/create'
     | '/properties/update'
@@ -126,6 +138,7 @@ export interface RootRouteChildren {
   PropertiesRouteRoute: typeof PropertiesRouteRouteWithChildren
   authLoginRoute: typeof authLoginRoute
   authSignupRoute: typeof authSignupRoute
+  ProfileUserIdRoute: typeof ProfileUserIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PropertiesPropertyIdRouteImport
       parentRoute: typeof PropertiesRouteRoute
     }
+    '/profile/$userId': {
+      id: '/profile/$userId'
+      path: '/profile/$userId'
+      fullPath: '/profile/$userId'
+      preLoaderRoute: typeof ProfileUserIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(auth)/signup': {
       id: '/(auth)/signup'
       path: '/signup'
@@ -212,6 +232,7 @@ const rootRouteChildren: RootRouteChildren = {
   PropertiesRouteRoute: PropertiesRouteRouteWithChildren,
   authLoginRoute: authLoginRoute,
   authSignupRoute: authSignupRoute,
+  ProfileUserIdRoute: ProfileUserIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

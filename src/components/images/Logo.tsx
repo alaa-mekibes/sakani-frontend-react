@@ -3,7 +3,7 @@ import darkLogo from '../../assets/sakani logo black.png'
 
 const Logo = ({ theme }: { theme: 'light' | 'dracula' }) => {
     return (
-        <img src={theme === 'light' ? lightLogo : darkLogo} width={120} height={40} alt="Sakani logo" />
+        <img src={theme === 'light' ? lightLogo : darkLogo} width={120} height={40} className='hover:scale-75 transition' alt="Sakani logo" />
     )
 }
 
