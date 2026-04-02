@@ -1,14 +1,15 @@
-import { createFileRoute, notFound } from '@tanstack/react-router'
+import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { api } from '../../lib/api';
 import type { IUser } from '../../interfaces';
-import { User, Mail, Calendar, Camera, Save, X, Lock, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Calendar, Camera, Save, X, Lock, Eye, EyeOff, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatDate } from '../../utils';
 import DefaultAvatar from '../../components/images/DefaultAvatar';
 import { updateUserSchema } from '../../validation';
 import { FieldInfo } from '../../components/layout/FieldInfo';
+import ConfirmDialog from '../../components/layout/ConfirmDialog';
 
 export const Route = createFileRoute('/profile/$userId')({
   loader: async ({ params, context }) => {
@@ -27,6 +28,8 @@ function ProfilePage() {
   const [showPassword, setShowPassword] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<IUser>(initialUser!);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
@@ -73,6 +76,16 @@ function ProfilePage() {
     setAvatarPreview(null);
   };
 
+  const deleteMe = async () => {
+    const res = await api.delete("/auth/");
+    if (res.status === 'success') {
+      toast.success('Bye bye 🥺');
+      setTimeout(() => navigate({ to: '/' }), 2000);
+    } else {
+      toast.error(res.message ?? 'Deletion failed');
+    }
+  };
+
   const avatarUrl = avatarPreview || currentUser.avatar || null;
 
   return (
@@ -82,7 +95,7 @@ function ProfilePage() {
           <div className="relative h-32 bg-linear-to-r from-primary to-secondary rounded-t-2xl" />
 
           <div className="card-body pt-0">
-            {/* Avatar */}
+            {/* avatar */}
             <div className="flex flex-col items-center -mt-16 mb-6">
               <div className="relative">
                 <div className="w-32 h-32 rounded-full ring-4 ring-base-100 overflow-hidden bg-base-200">
@@ -188,7 +201,9 @@ function ProfilePage() {
                       )}
                     </form.Field>
                   ) : (
-                    <p className="text-lg">{currentUser.email}</p>
+                    <a href={`mailto:${currentUser.email}`} className="text-lg text-primary hover:underline block">
+                      {currentUser.email}
+                    </a>
                   )}
                 </div>
 
@@ -264,18 +279,41 @@ function ProfilePage() {
                         )}
                       </form.Field>
                     </div>
+                    <button
+                      onClick={() => setOpenConfirm(true)}
+                      className="btn btn-error btn-sm"
+                    >
+                      <Trash2 size={16} /> Delete account
+                    </button>
+
+                    {openConfirm && (
+                      <ConfirmDialog
+                        open={openConfirm}
+                        title="Delete your account?"
+                        text="This action cannot be undone."
+                        onClose={() => setOpenConfirm(false)}
+                        onConfirm={() => {
+                          deleteMe();
+                          setOpenConfirm(false);
+                        }}
+                      />
+                    )}
                   </>
                 )}
 
                 {/* member Since */}
-                <div className="form-control w-full">
-                  <label className="label">
-                    <span className="label-text font-semibold flex items-center gap-2">
-                      <Calendar className="h-4 w-4" /> Member Since
-                    </span>
-                  </label>
-                  <p className="text-lg">{formatDate(currentUser.createdAt)}</p>
-                </div>
+                {!isEditing && (
+                  <div className="form-control w-full">
+                    <label className="label">
+                      <span className="label-text font-semibold flex items-center gap-2">
+                        <Calendar className="h-4 w-4" /> Member Since
+                      </span>
+                    </label>
+                    <p className="text-lg">
+                      {formatDate(currentUser.createdAt)}
+                    </p>
+                  </div>
+                )}
 
                 {isMine && currentUser.updatedAt !== currentUser.createdAt && (
                   <p className="text-sm text-base-content/50">
