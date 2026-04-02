@@ -22,6 +22,7 @@ export const searchPropertySchema = z.object({
     price: z.coerce.number().positive().catch(0),
     type: z.enum(Object.values(PropertyType)).catch('apartment'),
 }).partial();
+export type ISearchProperty = z.infer<typeof searchPropertySchema>;
 
 export const createPropertySchema = z.object({
     title: z.string().min(3),
