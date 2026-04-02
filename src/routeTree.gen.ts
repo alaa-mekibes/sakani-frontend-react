@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PropertiesRouteRouteImport } from './routes/properties/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropertiesIndexRouteImport } from './routes/properties/index'
+import { Route as PropertiesUpdateRouteImport } from './routes/properties/update'
+import { Route as PropertiesCreateRouteImport } from './routes/properties/create'
 import { Route as PropertiesPropertyIdRouteImport } from './routes/properties/$propertyId'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
@@ -29,6 +31,16 @@ const IndexRoute = IndexRouteImport.update({
 const PropertiesIndexRoute = PropertiesIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => PropertiesRouteRoute,
+} as any)
+const PropertiesUpdateRoute = PropertiesUpdateRouteImport.update({
+  id: '/update',
+  path: '/update',
+  getParentRoute: () => PropertiesRouteRoute,
+} as any)
+const PropertiesCreateRoute = PropertiesCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
   getParentRoute: () => PropertiesRouteRoute,
 } as any)
 const PropertiesPropertyIdRoute = PropertiesPropertyIdRouteImport.update({
@@ -53,6 +65,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
+  '/properties/create': typeof PropertiesCreateRoute
+  '/properties/update': typeof PropertiesUpdateRoute
   '/properties/': typeof PropertiesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -60,6 +74,8 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
+  '/properties/create': typeof PropertiesCreateRoute
+  '/properties/update': typeof PropertiesUpdateRoute
   '/properties': typeof PropertiesIndexRoute
 }
 export interface FileRoutesById {
@@ -69,6 +85,8 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
+  '/properties/create': typeof PropertiesCreateRoute
+  '/properties/update': typeof PropertiesUpdateRoute
   '/properties/': typeof PropertiesIndexRoute
 }
 export interface FileRouteTypes {
@@ -79,9 +97,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/properties/$propertyId'
+    | '/properties/create'
+    | '/properties/update'
     | '/properties/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/properties/$propertyId' | '/properties'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/properties/$propertyId'
+    | '/properties/create'
+    | '/properties/update'
+    | '/properties'
   id:
     | '__root__'
     | '/'
@@ -89,6 +116,8 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/signup'
     | '/properties/$propertyId'
+    | '/properties/create'
+    | '/properties/update'
     | '/properties/'
   fileRoutesById: FileRoutesById
 }
@@ -122,6 +151,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PropertiesIndexRouteImport
       parentRoute: typeof PropertiesRouteRoute
     }
+    '/properties/update': {
+      id: '/properties/update'
+      path: '/update'
+      fullPath: '/properties/update'
+      preLoaderRoute: typeof PropertiesUpdateRouteImport
+      parentRoute: typeof PropertiesRouteRoute
+    }
+    '/properties/create': {
+      id: '/properties/create'
+      path: '/create'
+      fullPath: '/properties/create'
+      preLoaderRoute: typeof PropertiesCreateRouteImport
+      parentRoute: typeof PropertiesRouteRoute
+    }
     '/properties/$propertyId': {
       id: '/properties/$propertyId'
       path: '/$propertyId'
@@ -148,11 +191,15 @@ declare module '@tanstack/react-router' {
 
 interface PropertiesRouteRouteChildren {
   PropertiesPropertyIdRoute: typeof PropertiesPropertyIdRoute
+  PropertiesCreateRoute: typeof PropertiesCreateRoute
+  PropertiesUpdateRoute: typeof PropertiesUpdateRoute
   PropertiesIndexRoute: typeof PropertiesIndexRoute
 }
 
 const PropertiesRouteRouteChildren: PropertiesRouteRouteChildren = {
   PropertiesPropertyIdRoute: PropertiesPropertyIdRoute,
+  PropertiesCreateRoute: PropertiesCreateRoute,
+  PropertiesUpdateRoute: PropertiesUpdateRoute,
   PropertiesIndexRoute: PropertiesIndexRoute,
 }
 

@@ -12,7 +12,7 @@ export const api = {
             credentials: 'include',
         }).then(res => res.json()),
 
-    post: <T = unknown>(url: string, body: unknown): Promise<ApiResponse<T>> =>
+    post: <T = unknown>(url: string, body?: unknown): Promise<ApiResponse<T>> =>
         fetch(`${BASE_URL}${url}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -37,6 +37,13 @@ export const api = {
     upload: <T = unknown>(url: string, formData: FormData): Promise<ApiResponse<T>> =>
         fetch(`${BASE_URL}${url}`, {
             method: 'POST',
+            credentials: 'include',
+            body: formData,
+        }).then(res => res.json()),
+
+    uploadPatch: <T = unknown>(url: string, formData: FormData): Promise<ApiResponse<T>> =>
+        fetch(`${BASE_URL}${url}`, {
+            method: 'PATCH',
             credentials: 'include',
             body: formData,
         }).then(res => res.json()),

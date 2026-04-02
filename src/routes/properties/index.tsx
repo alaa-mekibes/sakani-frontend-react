@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { searchPropertySchema } from '../../validation'
 import { api } from '../../lib/api'
 import type { IGetProperty } from '../../interfaces';
 import NoData from '../../components/layout/NoData';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight, Plus } from 'lucide-react';
 import { priceFormatter } from '../../utils';
 import { SafeImage } from '../../components/layout/SafeImage';
 
@@ -23,21 +23,33 @@ export const Route = createFileRoute('/properties/')({
 })
 
 function PropertyPage() {
+  const navigate = useNavigate();
   const { data } = Route.useLoaderData();
-
   if (!data?.length) return <NoData text="No properties found" />;
+
+
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
-          Properties
-        </h2>
-        <p className="text-base-content/70">
-          Found {data.length} property{data.length !== 1 ? 's' : ''} for you
-        </p>
-      </div>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+            Properties
+          </h2>
+          <p className="text-base-content/70">
+            Found {data.length} property{data.length !== 1 ? 's' : ''} for you
+          </p>
+        </div>
 
+        <button
+          onClick={() => navigate({ to: '/properties/create' })}
+          className="btn btn-primary"
+        >
+          <Plus className="h-4 w-4" />
+          Add Property
+        </button>
+
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.map((property) => (
           <Link
