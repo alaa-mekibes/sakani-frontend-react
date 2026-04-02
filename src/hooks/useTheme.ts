@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 export const useTheme = () => {
     const [theme, setTheme] = useState<'light' | 'dracula'>(
-        () => (localStorage.getItem('theme') as 'light' | 'dracula') ?? 'light'
+        () => (localStorage.getItem('theme') as 'light' | 'dracula') ?? 'dracula'
     );
 
     useEffect(() => {

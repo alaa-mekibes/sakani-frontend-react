@@ -4,7 +4,7 @@ export interface ApiResponse<T = unknown> {
     data?: T;
 }
 
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = import.meta.env.BACKEND_URL;
 
 export const api = {
     get: <T = unknown>(url: string): Promise<ApiResponse<T>> =>
