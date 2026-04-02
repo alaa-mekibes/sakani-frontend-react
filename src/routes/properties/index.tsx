@@ -1,12 +1,12 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { searchPropertySchema } from '../../validation'
 import { api } from '../../lib/api'
 import type { IGetProperty } from '../../interfaces';
 import NoData from '../../components/layout/NoData';
-import { MapPin, ArrowRight, Plus } from 'lucide-react';
-import { priceFormatter } from '../../utils';
-import { SafeImage } from '../../components/layout/SafeImage';
+import { Plus, User, Building } from 'lucide-react';
 import SearchCard from '../../components/layout/SearchCard';
+import PropertyGrid from '../../components/layout/PropertyGrid';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/properties/')({
   validateSearch: searchPropertySchema,
@@ -18,84 +18,92 @@ export const Route = createFileRoute('/properties/')({
         .map(([k, v]) => [k, String(v)])
     );
 
-    return api.get<IGetProperty[]>(`/property/?${params.toString()}`);
+    const properties = (await api.get<IGetProperty[]>(`/property/?${params.toString()}`)).data;
+    const myProperties = (await api.get<IGetProperty[]>(`/property/my`)).data;
+    return { properties, myProperties }
   },
   component: PropertyPage,
 })
 
 function PropertyPage() {
   const navigate = useNavigate();
-  const { data } = Route.useLoaderData();
+  const { properties, myProperties } = Route.useLoaderData();
   const filters = Route.useSearch()
+
+  const [showMine, setShowMine] = useState(false);
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent ">
+          <h2 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
             Properties
           </h2>
-          <p className="text-base-content/70">
-            Found {data?.length ?? 0} property{data?.length !== 1 ? 's' : ''} for you
-          </p>
+          {showMine ? (
+            <p className="text-base-content/70 mt-1">
+              Found {myProperties?.length ?? 0} property{myProperties?.length !== 1 ? 's' : ''} for you
+            </p>
+          ) : (
+            <p className="text-base-content/70 mt-1">
+              Found {properties?.length ?? 0} property{properties?.length !== 1 ? 's' : ''} for you
+            </p>
+          )}
         </div>
 
         <button
           onClick={() => navigate({ to: '/properties/create' })}
-          className="btn btn-primary"
+          className="btn btn-primary gap-2 shadow-md hover:shadow-lg transition-all"
         >
           <Plus className="h-4 w-4" />
           Add Property
         </button>
+      </div>
 
+      {/* toggle */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 p-4 bg-base-200/50 rounded-xl">
+        <div className="flex items-center gap-3">
+          <div className="tabs tabs-boxed bg-base-100 p-1">
+            <button
+              className={`tab gap-2 ${!showMine ? 'tab-active' : ''}`}
+              onClick={() => setShowMine(false)}
+            >
+              <Building className="h-4 w-4" />
+              All Properties
+            </button>
+            <button
+              className={`tab gap-2 ${showMine ? 'tab-active' : ''}`}
+              onClick={() => setShowMine(true)}
+            >
+              <User className="h-4 w-4" />
+              My Properties
+            </button>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="badge badge-primary badge-outline gap-1">
+            <Building className="h-3 w-3" />
+            {properties?.length ?? 0}
+          </div>
+          <div className="badge badge-secondary badge-outline gap-1">
+            <User className="h-3 w-3" />
+            {myProperties?.length ?? 0}
+          </div>
+        </div>
       </div>
 
       {/* search card */}
-      <SearchCard searched={filters} />
+      {!showMine && <SearchCard searched={filters} />}
 
-      {/* check data if exists */}
-      {!data?.length ? (<NoData text="No properties found" />) :
-        //*  content
-        (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.map((property) => (
-            <Link
-              key={property._id}
-              className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
-              to="/properties/$propertyId" params={{ propertyId: property._id }}
-            >
-              <figure className="relative h-48 overflow-hidden bg-base-200">
-                <SafeImage src={property?.images && property.images[0]} alt={property.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                <div className="absolute top-3 left-3">
-                  <div className="badge badge-primary">{property.type}</div>
-                </div>
-              </figure>
-
-              <div className="card-body p-5">
-                <h3 className="card-title text-xl font-bold line-clamp-1">
-                  {property.title}
-                </h3>
-
-                <div className="flex items-center gap-2 text-base-content/60 text-sm">
-                  <MapPin className="h-4 w-4 shrink-0" />
-                  <span className="line-clamp-1">{property.location}</span>
-                </div>
-
-                <div className="text-2xl font-bold text-primary mt-2">
-                  {priceFormatter(property.price)}
-                </div>
-
-                <div className="flex items-center justify-end border-t border-base-200 pt-3 mt-2">
-                  <button className="btn btn-ghost btn-sm gap-2 group-hover:gap-3 transition-all">
-                    View Details
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>)
-      }
+      {/* nodata */}
+      {!properties?.length && !showMine ? (
+        <NoData text="No properties found" />
+      ) : showMine && !myProperties?.length ? (
+        <NoData text="You haven't listed any properties yet" />
+      ) : (
+        <PropertyGrid properties={showMine ? myProperties! : properties!} />
+      )}
     </div>
   );
 }

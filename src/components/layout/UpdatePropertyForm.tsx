@@ -4,12 +4,13 @@ import { useNavigate } from '@tanstack/react-router';
 import { useForm } from '@tanstack/react-form';
 import { api } from '../../lib/api';
 import { PropertyType } from '../../types';
-import { Home, MapPin, Banknote, X, Upload } from 'lucide-react';
+import { Home, MapPin, Banknote, X, Upload, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { FieldInfo } from '../layout/FieldInfo';
 import { updatePropertySchema, type IUpdatePropertyInput } from '../../validation';
 import { validateImages } from '../../validation';
 import type { IGetProperty } from '../../interfaces';
+import ConfirmDialog from './ConfirmDialog';
 
 export const UpdatePropertyForm = ({ property }: { property: IGetProperty; }) => {
     const navigate = useNavigate();
@@ -39,6 +40,17 @@ export const UpdatePropertyForm = ({ property }: { property: IGetProperty; }) =>
     const removeNew = (index: number) => {
         setNewImages(prev => prev.filter((_, i) => i !== index));
         setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const deleteProperty = async () => {
+        const res = await api.delete("/auth/");
+        if (res.status === 'success') {
+            toast.success('Property deletion succufully');
+            setTimeout(() => navigate({ to: '/properties' }), 2000);
+        } else {
+            toast.error(res.message ?? 'Deletion failed');
+        }
     };
 
     const form = useForm({
@@ -176,7 +188,7 @@ export const UpdatePropertyForm = ({ property }: { property: IGetProperty; }) =>
             </form.Field>
 
             {/* images */}
-            <div className="form-control w-full">
+            <div className="form-control w-full flex flex-col">
                 <label className="label">
                     <span className="label-text font-semibold">Images ({totalImages}/5)</span>
                 </label>
@@ -212,7 +224,7 @@ export const UpdatePropertyForm = ({ property }: { property: IGetProperty; }) =>
                 </div>
 
                 {totalImages < 5 && (
-                    <label className="btn btn-outline gap-2">
+                    <label className="btn btn-outline gap-2 mr-auto">
                         <Upload className="h-4 w-4" />
                         Add Images
                         <input
@@ -225,6 +237,26 @@ export const UpdatePropertyForm = ({ property }: { property: IGetProperty; }) =>
                     </label>
                 )}
                 <p className="text-xs text-base-content/50 mt-2">JPG, JPEG, PNG, WebP — max 5MB each</p>
+
+                <button
+                    onClick={() => setOpenConfirm(true)}
+                    className="btn btn-error ml-auto"
+                >
+                    <Trash2 size={16} /> Delete Property
+                </button>
+
+                {openConfirm && (
+                    <ConfirmDialog
+                        open={openConfirm}
+                        title="Delete your account?"
+                        text="This action cannot be undone."
+                        onClose={() => setOpenConfirm(false)}
+                        onConfirm={() => {
+                            deleteProperty();
+                            setOpenConfirm(false);
+                        }}
+                    />
+                )}
             </div>
 
             {/* actions */}
@@ -251,6 +283,6 @@ export const UpdatePropertyForm = ({ property }: { property: IGetProperty; }) =>
                     )}
                 </form.Subscribe>
             </div>
-        </div>
+        </div >
     );
 };

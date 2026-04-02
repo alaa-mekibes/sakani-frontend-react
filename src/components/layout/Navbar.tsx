@@ -27,10 +27,7 @@ const Navbar = () => {
                     <ul
                         tabIndex={-1}
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                        <li>
-                            <Link to='/profile/$userId' params={{ userId: user._id }}>Profile</Link>
-                            <Link to='/'>My properties</Link>
-                        </li>
+                        <li><Link to='/profile/$userId' params={{ userId: user._id }}>Profile</Link></li>
                         <li><button onClick={logout}>Logout</button></li>
                     </ul>
                 </div>

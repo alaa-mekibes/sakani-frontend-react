@@ -20,7 +20,7 @@ export const api = {
             body: JSON.stringify(body),
         }).then(res => res.json()),
 
-    patch: <T = unknown>(url: string, body: unknown): Promise<ApiResponse<T>> =>
+    patch: <T = unknown>(url: string, body?: unknown): Promise<ApiResponse<T>> =>
         fetch(`${BASE_URL}${url}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },

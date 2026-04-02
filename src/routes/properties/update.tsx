@@ -5,7 +5,6 @@ import { api } from '../../lib/api';
 import type { IGetProperty } from '../../interfaces';
 import { propertySearchSchema } from '../../validation';
 
-
 export const Route = createFileRoute('/properties/update')({
   validateSearch: propertySearchSchema,
   loaderDeps: ({ search }) => ({ propertyId: search.propertyId }),

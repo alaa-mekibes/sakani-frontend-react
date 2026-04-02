@@ -144,7 +144,7 @@ function ProfilePage() {
               </h2>
               <div className="divider" />
 
-              <div className="space-y-4">
+              <div className="space-y-4  flex flex-col">
                 {/* Name */}
                 <div className="form-control w-full">
                   <label className="label">
@@ -281,7 +281,7 @@ function ProfilePage() {
                     </div>
                     <button
                       onClick={() => setOpenConfirm(true)}
-                      className="btn btn-error btn-sm"
+                      className="btn btn-error ml-auto"
                     >
                       <Trash2 size={16} /> Delete account
                     </button>
