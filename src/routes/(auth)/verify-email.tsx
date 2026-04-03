@@ -24,7 +24,9 @@ function VerifyEmailPage() {
 
         if (res.status === 'success') {
             toast.success('Email verified! 🎉');
-            navigate({ to: '/' });
+            setTimeout(() => {
+                navigate({ to: '/' });
+            }, 2000);
         } else {
             toast.error(res.message ?? 'Invalid code');
         }
