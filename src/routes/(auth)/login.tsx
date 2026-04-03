@@ -94,6 +94,10 @@ function LoginPage() {
                   )}
                 />
 
+                <Link to="/forgot-password" className="text-sm text-primary">
+                  Forgot password?
+                </Link>
+
                 <form.Subscribe selector={(state) => state.isSubmitting}>
                   {(isSubmitting) => (
                     <button
@@ -112,7 +116,7 @@ function LoginPage() {
               </fieldset>
 
               <p className="text-center text-sm mt-4 text-base-content/70">
-                Don’t have an account? <Link to='/signup' className="link">Sign up</Link>
+                Don't have an account? <Link to='/signup' className="link">Sign up</Link>
               </p>
             </div>
           </div>
