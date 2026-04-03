@@ -27,13 +27,18 @@ function LoginPage() {
       const res = await login(value.email, value.password)
 
       if (res.status === 'success') {
-        toast.success('Welcome back!')
-        setTimeout(() => {
-          navigate({ to: '/' });
-        }, 2000);
+        toast.success('Welcome back!');
+        navigate({ to: '/' });
+      } else if (res.message === 'Please verify your email first') {
+        toast.error('Please verify your email');
+        navigate({
+          to: '/verify-email',
+          search: { email: value.email }
+        });
       } else {
-        toast.error(res.message ?? 'Login failed')
+        toast.error(res.message ?? 'Login failed');
       }
+
     },
   })
 
