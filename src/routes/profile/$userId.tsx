@@ -43,7 +43,7 @@ function ProfilePage() {
 
       if (value.name !== initialUser!.name) formData.append('name', value.name);
       if (value.password) formData.append('password', value.password);
-      if (avatarFile) formData.append('image', avatarFile);
+      if (avatarFile) formData.append('avatar', avatarFile);
 
       if ([...formData.entries()].length === 0) {
         toast('Nothing to update');
