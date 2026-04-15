@@ -34,7 +34,6 @@ function ProfilePage() {
   const form = useForm({
     defaultValues: {
       name: initialUser!.name,
-      email: initialUser!.email,
       password: '',
       confirmPassword: '',
     },
@@ -43,7 +42,6 @@ function ProfilePage() {
       const formData = new FormData();
 
       if (value.name !== initialUser!.name) formData.append('name', value.name);
-      if (value.email !== initialUser!.email) formData.append('email', value.email);
       if (value.password) formData.append('password', value.password);
       if (avatarFile) formData.append('image', avatarFile);
 
@@ -187,29 +185,9 @@ function ProfilePage() {
                       <Mail className="h-4 w-4" /> Email Address
                     </span>
                   </label>
-                  {isMine && isEditing ? (
-                    <form.Field
-                      name="email"
-                      validators={{ onChange: ({ value }) => !value ? 'Email is required' : undefined }}
-                    >
-                      {(field) => (
-                        <>
-                          <input
-                            type="email"
-                            className="input input-bordered w-full"
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                          />
-                          <FieldInfo field={field} />
-                        </>
-                      )}
-                    </form.Field>
-                  ) : (
-                    <a href={`mailto:${currentUser.email}`} className="text-lg text-primary hover:underline block">
-                      {currentUser.email}
-                    </a>
-                  )}
+                  <a href={`mailto:${currentUser.email}`} className="text-lg text-primary hover:underline block">
+                    {currentUser.email}
+                  </a>
                 </div>
 
                 {/* password */}
