@@ -44,7 +44,7 @@ export const UpdatePropertyForm = ({ property }: { property: IGetProperty; }) =>
 
     const [openConfirm, setOpenConfirm] = useState(false);
     const deleteProperty = async () => {
-        const res = await api.delete("/auth/");
+        const res = await api.delete(`/property/${property._id}`);
         if (res.status === 'success') {
             toast.success('Property deletion succufully');
             setTimeout(() => navigate({ to: '/properties' }), 2000);
