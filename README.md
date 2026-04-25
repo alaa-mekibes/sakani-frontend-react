@@ -4,6 +4,8 @@
 
 **Backend Repo:** [sakani-backend-mongoose](https://github.com/alaa-mekibes/sakani-backend-mongoose)
 
+![home page screenshot](https://i.ibb.co/7t5JwYN1/homepage.png)
+
 ---
 
 ## 🛠 Tech Stack
