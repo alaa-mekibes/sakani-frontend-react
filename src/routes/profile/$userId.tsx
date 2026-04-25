@@ -264,7 +264,7 @@ function ProfilePage() {
                     </div>
                     <button
                       onClick={() => setOpenConfirm(true)}
-                      className="btn btn-error ml-auto"
+                      className="btn btn-error mr-auto"
                     >
                       <Trash2 size={16} /> Delete account
                     </button>
