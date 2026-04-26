@@ -29,9 +29,7 @@ function RegisterPage() {
             if (res.status === 'success') {
                 toast.success('High five! 🙌')
                 setTimeout(() => {
-                    // ! IN future i change it
-                    // navigate({ to: '/verify-email', search: { email: value.email } });
-                    navigate({ to: '/login'});
+                    navigate({ to: '/verify-email', search: { email: value.email } });
                 }, 2000);
             } else {
                 toast.error(res.message ?? 'Sign up failed')
